@@ -19,9 +19,11 @@
     state: present
     groups: wheel
     append: yes
+  no_log: true
 
 - name: Add public key
   ansible.posix.authorized_key:
     user: "{{ username }}"
     state: present
     key: "{{ public_key }}"
+  no_log: true
