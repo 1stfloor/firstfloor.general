@@ -1,64 +1,22 @@
 ---
-- name: Update packages and reboot machine
-  hosts: default
-  become: true
-
-  tasks:
-    - name: Upgrade Ubuntu Packages
-      ansible.builtin.apt:
-        update_cache: true
-        upgrade: full
-    
-    - name: Reboot Machine
-      ansible.builtin.reboot:
-
-- name: Add default user
-  hosts: default
-  become: true
-
-  vars:
-    username: "{{ lookup('ansible.builtin.env', 'NF_USERNAME') }}"
-    public_key: "{{ lookup('ansible.builtin.env', 'NF_PUBLIC_KEY') }}"
-
-  tasks:
-  - name: Make sure we have a 'wheel' group
-    ansible.builtin.group:
-      name: wheel
-      state: present
-  
-  - name: Allow 'wheel' group to have passwordless sudo
-    ansible.builtin.lineinfile:
-      dest: /etc/sudoers
-      state: present
-      regexp: '^%wheel'
-      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
-      validate: visudo -cf %s
-
-  - name: Create default user
-    ansible.builtin.user:
-      name: "{{ username }}"
-      state: present
-      groups: wheel
-      append: yes
-
-  - name: Add public key
-    ansible.posix.authorized_key:
-      user: "{{ username }}"
-      state: present
-      key: "{{ public_key }}"
-
-- name: Hardening
+- name: Packer Build Playbook
   hosts: default
   become: true
 
   collections:
+    - firstfloor.general
     - devsec.hardening
 
+  pre_tasks:
+    - name: Upgrade Packages
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: full
+    
+    - name: Reboot after Upgrade
+      ansible.builtin.reboot:
+
   roles:
+    - firstfloor.general.user
     - devsec.hardening.os_hardening
     - devsec.hardening.ssh_hardening
-
-  vars:
-    sysctl_overwrite:
-      # Enable IPv4 traffic forwarding.
-      net.ipv4.ip_forward: 1
