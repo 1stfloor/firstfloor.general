@@ -1,0 +1,4 @@
+galaxy_info:
+  author: Ionut Maxim
+  description: Sets sudo and public key for user
+  min_ansible_version: 2.1

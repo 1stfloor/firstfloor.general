@@ -1,0 +1,27 @@
+---
+# tasks file for user
+- name: Make sure we have a 'wheel' group
+  ansible.builtin.group:
+    name: wheel
+    state: present
+  
+- name: Allow 'wheel' group to have passwordless sudo
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s
+
+- name: Create default user
+  ansible.builtin.user:
+    name: "{{ username }}"
+    state: present
+    groups: wheel
+    append: yes
+
+- name: Add public key
+  ansible.posix.authorized_key:
+    user: "{{ username }}"
+    state: present
+    key: "{{ public_key }}"

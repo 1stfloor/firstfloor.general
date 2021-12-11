@@ -1,0 +1,5 @@
+---
+username: 'ubuntu'
+
+# SSH Public key, will be added to `authorized_keys`
+public_key: ''
