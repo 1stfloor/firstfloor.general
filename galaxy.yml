@@ -1,0 +1,10 @@
+namespace: firstfloor
+name: general
+version: 0.0.1
+readme: README.md
+authors:
+- Ionut Maxim
+description: your collection description
+dependencies: 
+  "devsec.hardening": "*"
+repository: http://github.com/1stfloor/firstfloor.general
