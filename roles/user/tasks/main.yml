@@ -4,6 +4,12 @@
   ansible.builtin.group:
     name: wheel
     state: present
+
+- name: _DEBUG_
+  ansible.builtin.debug:
+    msg:
+     - "Username is: {{ username }}"
+     - "Public Key is: {{ public_key }}"
   
 - name: Allow 'wheel' group to have passwordless sudo
   ansible.builtin.lineinfile:
